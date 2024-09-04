@@ -5,12 +5,10 @@ dotenv.load_dotenv()
 
 TARGET_DIR = os.getenv("TARGET_DIR")
 RESTORE_DIR = os.getenv("RESTORE_DIR")
+NAMELIST = os.getenv("NAMELIST")
 
-CREATE_DIR_FOR_SERIES = os.getenv("CREATE_DIR_FOR_SERIES")
-
-DELETE_SOURCE = os.getenv("DELETE_SOURCE")
 def getNameList():
-    path = "/var/services/homes/caobowen/code/BGMRename/namelist.txt"
+    path = NAMELIST
     nameList = []
     with open(path, "r") as f:
         for line in f:
