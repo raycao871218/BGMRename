@@ -1,11 +1,13 @@
 # /rename.py
-import os, dotenv, re
+import os, dotenv, re, shutil
 
 dotenv.load_dotenv()
 
 TARGET_DIR = os.getenv("TARGET_DIR")
 RESTORE_DIR = os.getenv("RESTORE_DIR")
 NAMELIST = os.getenv("NAMELIST")
+
+KEEP_ORIGINAL = os.environ.get('KEEP_ORIGINAL', 'True') == 'True'
 
 def getNameList():
     path = NAMELIST
@@ -87,8 +89,12 @@ def renameFiles():
                 print(f"New file path: {newFilePath}")
 
                 # copy the file to the restore directory
-                os.rename(originalFilePath, newFilePath)
-                print(f"File renamed: {file} -> {newFileName}{extention}")
+                if KEEP_ORIGINAL == True:
+                    shutil.copyfile(originalFilePath, newFilePath)
+                    print(f"File copied: {file} -> {newFileName}{extention}")
+                else :
+                    shutil.move(originalFilePath, newFilePath)                    
+                    print(f"File renamed: {file} -> {newFileName}{extention}")
 
                 
             # else:
