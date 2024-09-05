@@ -25,6 +25,10 @@ def getTargetFiles():
     targetFiles = []
     # get all files in the target directory
     for root, dirs, files in os.walk(path):
+        # ignore #recycle folder
+        if root.find("#recycle") != -1:
+            continue
+
         for file in files:
             # get file extension
             ext = os.path.splitext(file)[1]
@@ -47,6 +51,9 @@ def convert2RegexTemplate(template):
     
     # 将 {number} 替换为一个捕获组，用于匹配数字
     regex_template = escaped_template.replace(r'\{number\}', r'(?P<number>\d+)')
+    regex_template = regex_template.replace(r'\{nounce\}', r'(?P<nounce>\[\w+\])')
+
+    print(f"Regex template: {regex_template}")
     
     return regex_template
 
@@ -65,7 +72,7 @@ def renameFiles():
         elif renameConfig[0] == "TV":
             dirType = "TV/"
         else :
-            dirType = "OTHERS/"
+            dirType = "Others/"
 
         for file in targetFiles:
             # print(f"File: {file}")
@@ -76,10 +83,8 @@ def renameFiles():
             match = re.search(pattern, fileWithoutExt)
             if match:
                 extention = os.path.splitext(file)[1]
-                number = re.search(r"\d{2}", match.group()).group()
-                # print(f"Matched string: {match.group()}")
-                # print(f"Extracted number: {number}")
-
+                number = match.group("number")
+                
                 # replace the number with the new number
                 newFileName = renameConfig[2].replace("{number}", number)
                 newFileName = newFileName.replace("\n", "")
